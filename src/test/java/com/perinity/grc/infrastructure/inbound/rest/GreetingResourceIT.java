@@ -1,4 +1,4 @@
-package com.perinity.perinity.infrastructure.inbound.rest;
+package com.perinity.grc.infrastructure.inbound.rest;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
