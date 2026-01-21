@@ -3,9 +3,12 @@ package com.perinity.grc.application.service;
 import com.perinity.grc.application.domain.model.Client;
 import com.perinity.grc.application.ports.output.ClientRepositoryPort;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
+@ApplicationScoped
 public class ClientService {
 
     private final ClientRepositoryPort repository;
