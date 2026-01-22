@@ -1,5 +1,6 @@
 package com.perinity.grc.application.service;
 
+import com.perinity.grc.application.domain.exception.NotFoundException;
 import com.perinity.grc.application.domain.model.Client;
 import com.perinity.grc.application.ports.output.ClientRepositoryPort;
 
@@ -58,6 +59,6 @@ public class ClientService {
                 
                 return repository.save(existingClient);
             })
-            .orElseThrow(() -> new IllegalArgumentException("Client not found")); 
+            .orElseThrow(() -> new NotFoundException("Client not found with id: " + id));
     }
 }

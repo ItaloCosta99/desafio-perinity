@@ -85,12 +85,9 @@ public class ClientResource {
         dataToUpdate.setPhoneNumber(request.phoneNumber());
         dataToUpdate.setEmail(request.email());
 
-        try {
-            Client updatedClient = service.update(id, dataToUpdate);
-            return Response.ok(toResponse(updatedClient)).build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        Client updatedClient = service.update(id, dataToUpdate);
+        
+        return Response.ok(toResponse(updatedClient)).build();
     }
 
     @DELETE

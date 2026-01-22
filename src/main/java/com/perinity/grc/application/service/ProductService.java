@@ -1,6 +1,7 @@
 package com.perinity.grc.application.service;
 
 import com.perinity.grc.application.domain.model.Product;
+import com.perinity.grc.application.domain.exception.NotFoundException;
 import com.perinity.grc.application.ports.output.ProductRepositoryPort;
 
 import java.time.LocalDate;
@@ -50,6 +51,6 @@ public class ProductService {
                 existing.setSalePrice(data.getSalePrice());
                 return repository.save(existing);
             })
-            .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+            .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
     }
 }
