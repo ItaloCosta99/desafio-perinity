@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
+import java.util.List;
 
 @Path("/clients")
 @Produces(MediaType.APPLICATION_JSON)
@@ -55,5 +56,36 @@ public class ClientResource {
         return Response.created(URI.create("/clients/" + savedClient.getId()))
                        .entity(responseDTO)
                        .build();
+    }
+
+    @GET
+    public List<ClientResponse> listAll() {
+        return service.findAll().stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @GET
+    @Path("/{id}")
+    public Response getById(@PathParam("id") String id) {
+        return service.findById(id)
+                .map(client -> Response.ok(toResponse(client)).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    // Método auxiliar para não repetir a criação do DTO (Reutilize no POST também!)
+    private ClientResponse toResponse(Client client) {
+        return new ClientResponse(
+            client.getId(),
+            client.getFullName(),
+            client.getMotherName(),
+            client.getAddress(),
+            client.getCpf(),
+            client.getRg(),
+            client.getBirthDate(),
+            client.getPhoneNumber(),
+            client.getCreatedAt(),
+            client.getEmail()
+        );
     }
 }

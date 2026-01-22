@@ -30,7 +30,7 @@ class ClientServiceTest {
 
         // Mocking the repository behavior
         Mockito.when(repositoryPort.save(any(Client.class))).thenAnswer(invocation -> {
-            return invocation.getArgument(0); 
+            return invocation.getArgument(0);
         });
 
         // Act
@@ -40,8 +40,73 @@ class ClientServiceTest {
         Assertions.assertNotNull(savedClient.getId(), "Client ID should be auto-generated");
         Assertions.assertNotNull(savedClient.getCreatedAt(), "Created Date should be set");
         Assertions.assertEquals("João Mário", savedClient.getFullName());
-        
+
         // Verify interaction
         Mockito.verify(repositoryPort, Mockito.times(1)).save(any(Client.class));
+    }
+
+    @Test
+    void shouldReturnClient_WhenIdExists() {
+        // Arrange
+        String validId = "any-uuid";
+        Client expectedClient = new Client();
+        expectedClient.setId(validId);
+
+        Mockito.when(repositoryPort.findById(validId))
+                .thenReturn(java.util.Optional.of(expectedClient));
+
+        // Act
+        java.util.Optional<Client> result = service.findById(validId);
+
+        // Assert
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(validId, result.get().getId());
+    }
+
+    @Test
+    void shouldReturnEmpty_WhenIdDoesNotExist() {
+        // Arrange
+        String invalidId = "invalid-uuid";
+        Mockito.when(repositoryPort.findById(invalidId))
+                .thenReturn(java.util.Optional.empty());
+
+        // Act
+        java.util.Optional<Client> result = service.findById(invalidId);
+
+        // Assert
+        Assertions.assertFalse(result.isPresent());
+    }
+
+    @Test
+    void shouldReturnAllClients() {
+        // Arrange
+        Client client1 = new Client();
+        client1.setId("id-1");
+        Client client2 = new Client();
+        client2.setId("id-2");
+        java.util.List<Client> expectedClients = java.util.Arrays.asList(client1, client2);
+        Mockito.when(repositoryPort.findAllClients())
+                .thenReturn(expectedClients);
+
+        // Act
+        java.util.List<Client> result = service.findAll();
+
+        // Assert
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals("id-1", result.get(0).getId());
+        Assertions.assertEquals("id-2", result.get(1).getId());
+    }
+
+    @Test
+    void shouldReturnEmpty_WhenAllClientsIsEmpty() {
+        // Arrange
+        Mockito.when(repositoryPort.findAllClients())
+                .thenReturn(java.util.Collections.emptyList());
+
+        // Act
+        java.util.List<Client> result = service.findAll();
+
+        // Assert
+        Assertions.assertTrue(result.isEmpty());
     }
 }

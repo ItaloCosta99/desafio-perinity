@@ -6,6 +6,8 @@ import com.perinity.grc.application.ports.output.ClientRepositoryPort;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -27,5 +29,13 @@ public class ClientService {
         }
 
         return repository.save(client);
+    }
+
+    public Optional<Client> findById(String id) {
+        return repository.findById(id);
+    }
+
+    public List<Client> findAll() {
+        return repository.findAllClients();
     }
 }

@@ -1,5 +1,9 @@
 package com.perinity.grc.infrastructure.outbound.persistence;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.perinity.grc.application.domain.model.Client;
 import com.perinity.grc.application.ports.output.ClientRepositoryPort;
 import com.perinity.grc.infrastructure.outbound.persistence.entity.ClientEntity;
@@ -25,6 +29,37 @@ public class ClientRepositoryAdapter implements ClientRepositoryPort, PanacheMon
 
         persistOrUpdate(entity);
 
+        return client;
+    }
+
+    @Override
+    public Optional<Client> findById(String id) {
+        // O Panache busca pelo ID. Se achar, convertemos.
+        return find("id", id).firstResultOptional()
+                .map(this::toDomain);
+    }
+
+
+    @Override
+    public List<Client> findAllClients() {
+        return listAll().stream() 
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    // Método Auxiliar: Converter Entity -> Domain
+    private Client toDomain(ClientEntity entity) {
+        Client client = new Client();
+        client.setId(entity.id);
+        client.setFullName(entity.fullName);
+        client.setMotherName(entity.motherName);
+        client.setAddress(entity.address);
+        client.setCpf(entity.cpf);
+        client.setRg(entity.rg);
+        client.setBirthDate(entity.birthDate);
+        client.setPhoneNumber(entity.phoneNumber);
+        client.setCreatedAt(entity.createdAt);
+        client.setEmail(entity.email);
         return client;
     }
 }
