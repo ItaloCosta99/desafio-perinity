@@ -9,4 +9,5 @@ public interface ClientRepositoryPort {
     Client save(Client client);
     Optional<Client> findById(String id);
     List<Client> findAllClients();
+    boolean delete(String id);
 }

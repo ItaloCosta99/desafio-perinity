@@ -109,4 +109,41 @@ class ClientServiceTest {
         // Assert
         Assertions.assertTrue(result.isEmpty());
     }
+
+    @Test
+    void shouldDeleteClient_WhenIdExists() {
+        // Arrange
+        String validId = "any-uuid";
+        Mockito.when(repositoryPort.delete(validId)).thenReturn(true);
+
+        // Act
+        boolean deleted = service.delete(validId);
+
+        // Assert
+        Assertions.assertTrue(deleted);
+        Mockito.verify(repositoryPort, Mockito.times(1)).delete(validId);
+    }
+
+    @Test
+    void shouldUpdateClient_WhenIdExists() {
+        // Arrange
+        String id = "uuid-existente";
+        Client existingClient = new Client();
+        existingClient.setId(id);
+        existingClient.setFullName("João Mário");
+        existingClient.setCreatedAt(java.time.LocalDate.now().minusDays(10));
+        Client dataToUpdate = new Client();
+        dataToUpdate.setFullName("João da Silva");
+
+        Mockito.when(repositoryPort.findById(id)).thenReturn(java.util.Optional.of(existingClient));
+        Mockito.when(repositoryPort.save(any(Client.class))).thenAnswer(i -> i.getArgument(0));
+
+        // Act
+        Client updated = service.update(id, dataToUpdate);
+
+        // Assert
+        Assertions.assertEquals("João da Silva", updated.getFullName()); 
+        Assertions.assertEquals(id, updated.getId()); 
+        Assertions.assertNotNull(updated.getCreatedAt());
+    }
 }

@@ -34,7 +34,6 @@ public class ClientRepositoryAdapter implements ClientRepositoryPort, PanacheMon
 
     @Override
     public Optional<Client> findById(String id) {
-        // O Panache busca pelo ID. Se achar, convertemos.
         return find("id", id).firstResultOptional()
                 .map(this::toDomain);
     }
@@ -47,7 +46,11 @@ public class ClientRepositoryAdapter implements ClientRepositoryPort, PanacheMon
                 .collect(Collectors.toList());
     }
 
-    // Método Auxiliar: Converter Entity -> Domain
+    @Override
+    public boolean delete(String id) {
+        return delete("id", id) > 0;
+    }
+
     private Client toDomain(ClientEntity entity) {
         Client client = new Client();
         client.setId(entity.id);

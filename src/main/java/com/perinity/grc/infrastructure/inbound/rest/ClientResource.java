@@ -27,7 +27,6 @@ public class ClientResource {
 
     @POST
     public Response createClient(@Valid CreateClientRequest request) {
-        // 1. Adapter: Convert DTO -> Domain
         Client domainClient = new Client();
         domainClient.setFullName(request.fullName());
         domainClient.setMotherName(request.motherName());
@@ -73,7 +72,37 @@ public class ClientResource {
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 
-    // Método auxiliar para não repetir a criação do DTO (Reutilize no POST também!)
+    @PUT
+    @Path("/{id}")
+    public Response update(@PathParam("id") String id, @Valid CreateClientRequest request) {
+        Client dataToUpdate = new Client();
+        dataToUpdate.setFullName(request.fullName());
+        dataToUpdate.setMotherName(request.motherName());
+        dataToUpdate.setAddress(request.address());
+        dataToUpdate.setCpf(request.cpf());
+        dataToUpdate.setRg(request.rg());
+        dataToUpdate.setBirthDate(request.birthDate());
+        dataToUpdate.setPhoneNumber(request.phoneNumber());
+        dataToUpdate.setEmail(request.email());
+
+        try {
+            Client updatedClient = service.update(id, dataToUpdate);
+            return Response.ok(toResponse(updatedClient)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") String id) {
+        boolean deleted = service.delete(id);
+        if (deleted) {
+            return Response.noContent().build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
     private ClientResponse toResponse(Client client) {
         return new ClientResponse(
             client.getId(),

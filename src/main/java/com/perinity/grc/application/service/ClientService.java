@@ -38,4 +38,26 @@ public class ClientService {
     public List<Client> findAll() {
         return repository.findAllClients();
     }
+
+    public boolean delete(String id) {
+        return repository.delete(id);
+    }
+
+    public Client update(String id, Client clientWithNewData) {
+        return repository.findById(id)
+            .map(existingClient -> {
+                existingClient.setFullName(clientWithNewData.getFullName());
+                existingClient.setMotherName(clientWithNewData.getMotherName());
+                existingClient.setAddress(clientWithNewData.getAddress());
+                existingClient.setCpf(clientWithNewData.getCpf());
+                existingClient.setRg(clientWithNewData.getRg());
+                existingClient.setBirthDate(clientWithNewData.getBirthDate());
+                existingClient.setPhoneNumber(clientWithNewData.getPhoneNumber());
+                existingClient.setEmail(clientWithNewData.getEmail());
+                
+                
+                return repository.save(existingClient);
+            })
+            .orElseThrow(() -> new IllegalArgumentException("Client not found")); 
+    }
 }
