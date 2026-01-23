@@ -12,7 +12,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusTest
 class ProductResourceTest {
-
   @Test
   void testProductFlow() {
     CreateProductRequest request = new CreateProductRequest(
