@@ -3,6 +3,7 @@ package com.perinity.grc.application.service;
 import com.perinity.grc.application.domain.model.Product;
 import com.perinity.grc.application.domain.exception.NotFoundException;
 import com.perinity.grc.application.ports.output.ProductRepositoryPort;
+import com.perinity.grc.infrastructure.inbound.rest.dto.UnsoldProductDTO;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -15,9 +16,11 @@ import java.util.UUID;
 public class ProductService {
 
     private final ProductRepositoryPort repository;
+    private final SaleService saleService;
 
-    public ProductService(ProductRepositoryPort repository) {
+    public ProductService(ProductRepositoryPort repository, SaleService saleService) {
         this.repository = repository;
+        this.saleService = saleService;
     }
 
     public Product create(Product product) {
@@ -55,5 +58,18 @@ public class ProductService {
                     return repository.save(existing);
                 })
                 .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
+    }
+
+    public List<UnsoldProductDTO> getOldestProductsReport() {
+        List<Product> oldest = repository.findOldestProducts(3);
+
+        return oldest.stream()
+                .sorted(java.util.Comparator.comparing(Product::getPurchasePrice).reversed())
+                .map(p -> new UnsoldProductDTO(
+                        p.getName(),
+                        p.getWeight(),
+                        p.getCreatedAt(),
+                        p.getPurchasePrice()))
+                .collect(java.util.stream.Collectors.toList());
     }
 }

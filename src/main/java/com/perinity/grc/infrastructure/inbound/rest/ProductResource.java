@@ -4,6 +4,8 @@ import com.perinity.grc.application.domain.model.Product;
 import com.perinity.grc.application.service.ProductService;
 import com.perinity.grc.infrastructure.inbound.rest.dto.CreateProductRequest;
 import com.perinity.grc.infrastructure.inbound.rest.dto.ProductResponse;
+import com.perinity.grc.infrastructure.inbound.rest.dto.UnsoldProductDTO;
+
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -80,9 +82,14 @@ public class ProductResource {
 
     private ProductResponse toResponse(Product p) {
         return new ProductResponse(
-            p.getId(), p.getName(), p.getType(), p.getDetails(),
-            p.getDimensions(), p.getWeight(), p.getPurchasePrice(),
-            p.getSalePrice(), p.getCreatedAt()
-        );
+                p.getId(), p.getName(), p.getType(), p.getDetails(),
+                p.getDimensions(), p.getWeight(), p.getPurchasePrice(),
+                p.getSalePrice(), p.getCreatedAt());
+    }
+
+    @GET
+    @Path("/report/oldest")
+    public List<UnsoldProductDTO> getOldestReport() {
+        return service.getOldestProductsReport();
     }
 }

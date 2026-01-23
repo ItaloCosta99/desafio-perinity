@@ -4,6 +4,7 @@ import com.perinity.grc.application.domain.model.Product;
 import com.perinity.grc.application.ports.output.ProductRepositoryPort;
 import com.perinity.grc.infrastructure.outbound.persistence.entity.ProductEntity;
 import io.quarkus.mongodb.panache.PanacheMongoRepositoryBase;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
@@ -47,6 +48,16 @@ public class ProductRepositoryAdapter
     @Override
     public boolean deleteProduct(String id) {
         return delete("id", id) > 0;
+    }
+
+    @Override
+    public List<Product> findOldestProducts(int limit) {
+        return findAll(Sort.ascending("createdAt"))
+                .page(0, limit)
+                .list()
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
     }
 
     private Product toDomain(ProductEntity entity) {

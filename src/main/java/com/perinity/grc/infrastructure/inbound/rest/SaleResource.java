@@ -4,8 +4,11 @@ import com.perinity.grc.application.domain.model.Sale;
 import com.perinity.grc.application.domain.model.SaleItem;
 import com.perinity.grc.application.service.SaleService;
 import com.perinity.grc.infrastructure.inbound.rest.dto.CreateSaleRequest;
+import com.perinity.grc.infrastructure.inbound.rest.dto.MonthlyRevenueStats;
 import com.perinity.grc.infrastructure.inbound.rest.dto.SaleItemResponse;
 import com.perinity.grc.infrastructure.inbound.rest.dto.SaleResponse;
+import com.perinity.grc.infrastructure.inbound.rest.dto.TopSellingProductDTO;
+
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -83,10 +86,16 @@ public class SaleResource {
 
   @GET
   @Path("/report/monthly")
-  public com.perinity.grc.infrastructure.inbound.rest.dto.MonthlyRevenueStats getMonthlyReport(
+  public MonthlyRevenueStats getMonthlyReport(
       @QueryParam("date") String dateStr) {
 
     LocalDate date = (dateStr == null) ? LocalDate.now() : LocalDate.parse(dateStr);
     return service.generateMonthlyReport(date);
+  }
+
+  @GET
+  @Path("/report/top-selling")
+  public List<TopSellingProductDTO> getTopSellingReport() {
+    return service.getTopSellingProductsReport();
   }
 }
