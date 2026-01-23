@@ -40,21 +40,20 @@ public class ClientResource {
         Client savedClient = service.create(domainClient);
 
         ClientResponse responseDTO = new ClientResponse(
-            savedClient.getId(),
-            savedClient.getFullName(),
-            savedClient.getMotherName(),
-            savedClient.getAddress(),
-            savedClient.getCpf(),
-            savedClient.getRg(),
-            savedClient.getBirthDate(),
-            savedClient.getPhoneNumber(),
-            savedClient.getCreatedAt(),
-            savedClient.getEmail()
-        );
+                savedClient.getId(),
+                savedClient.getFullName(),
+                savedClient.getMotherName(),
+                savedClient.getAddress(),
+                savedClient.getCpf(),
+                savedClient.getRg(),
+                savedClient.getBirthDate(),
+                savedClient.getPhoneNumber(),
+                savedClient.getCreatedAt(),
+                savedClient.getEmail());
 
         return Response.created(URI.create("/clients/" + savedClient.getId()))
-                       .entity(responseDTO)
-                       .build();
+                .entity(responseDTO)
+                .build();
     }
 
     @GET
@@ -86,7 +85,7 @@ public class ClientResource {
         dataToUpdate.setEmail(request.email());
 
         Client updatedClient = service.update(id, dataToUpdate);
-        
+
         return Response.ok(toResponse(updatedClient)).build();
     }
 
@@ -100,18 +99,24 @@ public class ClientResource {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
+    @GET
+    @Path("/report/new-clients/{year}")
+    public List<com.perinity.grc.infrastructure.inbound.rest.dto.NewClientReportDTO> getNewClientsReport(
+            @PathParam("year") int year) {
+        return service.getNewClientsReport(year);
+    }
+
     private ClientResponse toResponse(Client client) {
         return new ClientResponse(
-            client.getId(),
-            client.getFullName(),
-            client.getMotherName(),
-            client.getAddress(),
-            client.getCpf(),
-            client.getRg(),
-            client.getBirthDate(),
-            client.getPhoneNumber(),
-            client.getCreatedAt(),
-            client.getEmail()
-        );
+                client.getId(),
+                client.getFullName(),
+                client.getMotherName(),
+                client.getAddress(),
+                client.getCpf(),
+                client.getRg(),
+                client.getBirthDate(),
+                client.getPhoneNumber(),
+                client.getCreatedAt(),
+                client.getEmail());
     }
 }

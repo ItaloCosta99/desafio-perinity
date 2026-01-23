@@ -50,6 +50,15 @@ public class ClientRepositoryAdapter implements ClientRepositoryPort, PanacheMon
         return delete("id", id) > 0;
     }
 
+    @Override
+    public List<Client> findClientsRegisteredBetween(java.time.LocalDate startDate, java.time.LocalDate endDate) {
+        return find("createdAt >= ?1 and createdAt <= ?2", startDate, endDate)
+                .list()
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
     private Client toDomain(ClientEntity entity) {
         Client client = new Client();
         client.setId(entity.id);

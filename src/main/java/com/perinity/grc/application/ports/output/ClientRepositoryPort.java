@@ -13,4 +13,6 @@ public interface ClientRepositoryPort {
     List<Client> findAllClients();
 
     boolean deleteClient(String id);
+
+    java.util.List<Client> findClientsRegisteredBetween(java.time.LocalDate startDate, java.time.LocalDate endDate);
 }
