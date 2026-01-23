@@ -7,7 +7,10 @@ import com.perinity.grc.application.domain.model.Client;
 
 public interface ClientRepositoryPort {
     Client save(Client client);
-    Optional<Client> findById(String id);
+
+    Optional<Client> findClientById(String id);
+
     List<Client> findAllClients();
-    boolean delete(String id);
+
+    boolean deleteClient(String id);
 }

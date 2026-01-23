@@ -5,14 +5,14 @@ import com.perinity.grc.application.domain.model.SaleItem;
 import com.perinity.grc.application.ports.output.SaleRepositoryPort;
 import com.perinity.grc.infrastructure.outbound.persistence.entity.SaleEntity;
 import com.perinity.grc.infrastructure.outbound.persistence.entity.SaleItemEntity;
-import io.quarkus.mongodb.panache.PanacheMongoRepository;
+import io.quarkus.mongodb.panache.PanacheMongoRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class SaleRepositoryAdapter implements SaleRepositoryPort, PanacheMongoRepository<SaleEntity> {
+public class SaleRepositoryAdapter implements SaleRepositoryPort, PanacheMongoRepositoryBase<SaleEntity, String> {
 
     @Override
     public Sale save(Sale sale) {
@@ -41,7 +41,7 @@ public class SaleRepositoryAdapter implements SaleRepositoryPort, PanacheMongoRe
         entity.finalAmount = sale.getFinalAmount();
         entity.paymentMethod = sale.getPaymentMethod();
         entity.paymentDetails = sale.getPaymentDetails();
-        
+
         if (sale.getItems() != null) {
             entity.items = sale.getItems().stream().map(item -> {
                 SaleItemEntity itemEntity = new SaleItemEntity();

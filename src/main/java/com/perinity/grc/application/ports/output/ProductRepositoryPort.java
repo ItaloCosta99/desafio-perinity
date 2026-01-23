@@ -6,7 +6,10 @@ import java.util.Optional;
 
 public interface ProductRepositoryPort {
     Product save(Product product);
-    Optional<Product> findById(String id);
+
+    Optional<Product> findProductById(String id);
+
     List<Product> findAllProducts();
-    boolean delete(String id);
+
+    boolean deleteProduct(String id);
 }

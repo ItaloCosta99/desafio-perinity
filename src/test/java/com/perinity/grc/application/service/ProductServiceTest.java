@@ -56,7 +56,7 @@ class ProductServiceTest {
         updateData.setName("New Name");
         updateData.setSalePrice(new BigDecimal("200.00"));
 
-        Mockito.when(repositoryPort.findById(id)).thenReturn(Optional.of(existing));
+        Mockito.when(repositoryPort.findProductById(id)).thenReturn(Optional.of(existing));
         Mockito.when(repositoryPort.save(any(Product.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act

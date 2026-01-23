@@ -3,7 +3,7 @@ package com.perinity.grc.infrastructure.outbound.persistence;
 import com.perinity.grc.application.domain.model.Product;
 import com.perinity.grc.application.ports.output.ProductRepositoryPort;
 import com.perinity.grc.infrastructure.outbound.persistence.entity.ProductEntity;
-import io.quarkus.mongodb.panache.PanacheMongoRepository;
+import io.quarkus.mongodb.panache.PanacheMongoRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
@@ -11,7 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class ProductRepositoryAdapter implements ProductRepositoryPort, PanacheMongoRepository<ProductEntity> {
+public class ProductRepositoryAdapter
+        implements ProductRepositoryPort, PanacheMongoRepositoryBase<ProductEntity, String> {
 
     @Override
     public Product save(Product product) {
@@ -31,8 +32,8 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort, PanacheM
     }
 
     @Override
-    public Optional<Product> findById(String id) {
-        return find("id", id).firstResultOptional()
+    public Optional<Product> findProductById(String id) {
+        return findByIdOptional(id)
                 .map(this::toDomain);
     }
 
@@ -44,7 +45,7 @@ public class ProductRepositoryAdapter implements ProductRepositoryPort, PanacheM
     }
 
     @Override
-    public boolean delete(String id) {
+    public boolean deleteProduct(String id) {
         return delete("id", id) > 0;
     }
 

@@ -40,13 +40,13 @@ class SaleServiceTest {
         Client client = new Client();
         client.setId("client-1");
         client.setFullName("Maria Client");
-        Mockito.when(clientRepository.findById("client-1")).thenReturn(Optional.of(client));
+        Mockito.when(clientRepository.findClientById("client-1")).thenReturn(Optional.of(client));
 
         Product product = new Product();
         product.setId("prod-1");
         product.setName("Product A");
         product.setSalePrice(new BigDecimal("100.00"));
-        Mockito.when(productRepository.findById("prod-1")).thenReturn(Optional.of(product));
+        Mockito.when(productRepository.findProductById("prod-1")).thenReturn(Optional.of(product));
 
         Mockito.when(saleRepository.save(any(Sale.class))).thenAnswer(i -> i.getArgument(0));
 
@@ -54,7 +54,7 @@ class SaleServiceTest {
         inputSale.setClientId("client-1");
         SaleItem itemInput = new SaleItem();
         itemInput.setProductId("prod-1");
-        itemInput.setQuantity(2); 
+        itemInput.setQuantity(2);
         inputSale.setItems(List.of(itemInput));
 
         // Act
@@ -64,7 +64,7 @@ class SaleServiceTest {
         Assertions.assertEquals(0, new BigDecimal("200.00").compareTo(createdSale.getTotalAmount()));
         Assertions.assertEquals(0, new BigDecimal("18.00").compareTo(createdSale.getTaxAmount()));
         Assertions.assertEquals(0, new BigDecimal("218.00").compareTo(createdSale.getFinalAmount()));
-        
+
         Assertions.assertEquals("Maria Client", createdSale.getClientName());
         Assertions.assertNotNull(createdSale.getSaleDate());
     }

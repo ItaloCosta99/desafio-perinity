@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import com.perinity.grc.application.domain.model.Client;
 import com.perinity.grc.application.ports.output.ClientRepositoryPort;
 import com.perinity.grc.infrastructure.outbound.persistence.entity.ClientEntity;
-import io.quarkus.mongodb.panache.PanacheMongoRepository;
+import io.quarkus.mongodb.panache.PanacheMongoRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class ClientRepositoryAdapter implements ClientRepositoryPort, PanacheMongoRepository<ClientEntity> {
+public class ClientRepositoryAdapter implements ClientRepositoryPort, PanacheMongoRepositoryBase<ClientEntity, String> {
 
     @Override
     public Client save(Client client) {
@@ -33,21 +33,20 @@ public class ClientRepositoryAdapter implements ClientRepositoryPort, PanacheMon
     }
 
     @Override
-    public Optional<Client> findById(String id) {
-        return find("id", id).firstResultOptional()
+    public Optional<Client> findClientById(String id) {
+        return findByIdOptional(id)
                 .map(this::toDomain);
     }
 
-
     @Override
     public List<Client> findAllClients() {
-        return listAll().stream() 
+        return listAll().stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public boolean delete(String id) {
+    public boolean deleteClient(String id) {
         return delete("id", id) > 0;
     }
 

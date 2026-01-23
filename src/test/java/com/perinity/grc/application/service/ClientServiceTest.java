@@ -52,7 +52,7 @@ class ClientServiceTest {
         Client expectedClient = new Client();
         expectedClient.setId(validId);
 
-        Mockito.when(repositoryPort.findById(validId))
+        Mockito.when(repositoryPort.findClientById(validId))
                 .thenReturn(java.util.Optional.of(expectedClient));
 
         // Act
@@ -67,7 +67,7 @@ class ClientServiceTest {
     void shouldReturnEmpty_WhenIdDoesNotExist() {
         // Arrange
         String invalidId = "invalid-uuid";
-        Mockito.when(repositoryPort.findById(invalidId))
+        Mockito.when(repositoryPort.findClientById(invalidId))
                 .thenReturn(java.util.Optional.empty());
 
         // Act
@@ -114,14 +114,14 @@ class ClientServiceTest {
     void shouldDeleteClient_WhenIdExists() {
         // Arrange
         String validId = "any-uuid";
-        Mockito.when(repositoryPort.delete(validId)).thenReturn(true);
+        Mockito.when(repositoryPort.deleteClient(validId)).thenReturn(true);
 
         // Act
         boolean deleted = service.delete(validId);
 
         // Assert
         Assertions.assertTrue(deleted);
-        Mockito.verify(repositoryPort, Mockito.times(1)).delete(validId);
+        Mockito.verify(repositoryPort, Mockito.times(1)).deleteClient(validId);
     }
 
     @Test
@@ -135,15 +135,15 @@ class ClientServiceTest {
         Client dataToUpdate = new Client();
         dataToUpdate.setFullName("João da Silva");
 
-        Mockito.when(repositoryPort.findById(id)).thenReturn(java.util.Optional.of(existingClient));
+        Mockito.when(repositoryPort.findClientById(id)).thenReturn(java.util.Optional.of(existingClient));
         Mockito.when(repositoryPort.save(any(Client.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
         Client updated = service.update(id, dataToUpdate);
 
         // Assert
-        Assertions.assertEquals("João da Silva", updated.getFullName()); 
-        Assertions.assertEquals(id, updated.getId()); 
+        Assertions.assertEquals("João da Silva", updated.getFullName());
+        Assertions.assertEquals(id, updated.getId());
         Assertions.assertNotNull(updated.getCreatedAt());
     }
 }

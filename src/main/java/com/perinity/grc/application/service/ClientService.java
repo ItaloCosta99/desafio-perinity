@@ -33,7 +33,7 @@ public class ClientService {
     }
 
     public Optional<Client> findById(String id) {
-        return repository.findById(id);
+        return repository.findClientById(id);
     }
 
     public List<Client> findAll() {
@@ -41,24 +41,23 @@ public class ClientService {
     }
 
     public boolean delete(String id) {
-        return repository.delete(id);
+        return repository.deleteClient(id);
     }
 
     public Client update(String id, Client clientWithNewData) {
-        return repository.findById(id)
-            .map(existingClient -> {
-                existingClient.setFullName(clientWithNewData.getFullName());
-                existingClient.setMotherName(clientWithNewData.getMotherName());
-                existingClient.setAddress(clientWithNewData.getAddress());
-                existingClient.setCpf(clientWithNewData.getCpf());
-                existingClient.setRg(clientWithNewData.getRg());
-                existingClient.setBirthDate(clientWithNewData.getBirthDate());
-                existingClient.setPhoneNumber(clientWithNewData.getPhoneNumber());
-                existingClient.setEmail(clientWithNewData.getEmail());
-                
-                
-                return repository.save(existingClient);
-            })
-            .orElseThrow(() -> new NotFoundException("Client not found with id: " + id));
+        return repository.findClientById(id)
+                .map(existingClient -> {
+                    existingClient.setFullName(clientWithNewData.getFullName());
+                    existingClient.setMotherName(clientWithNewData.getMotherName());
+                    existingClient.setAddress(clientWithNewData.getAddress());
+                    existingClient.setCpf(clientWithNewData.getCpf());
+                    existingClient.setRg(clientWithNewData.getRg());
+                    existingClient.setBirthDate(clientWithNewData.getBirthDate());
+                    existingClient.setPhoneNumber(clientWithNewData.getPhoneNumber());
+                    existingClient.setEmail(clientWithNewData.getEmail());
+
+                    return repository.save(existingClient);
+                })
+                .orElseThrow(() -> new NotFoundException("Client not found with id: " + id));
     }
 }
