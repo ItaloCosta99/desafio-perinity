@@ -11,6 +11,7 @@ import com.perinity.grc.application.ports.output.SaleRepositoryPort;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,5 +68,46 @@ public class SaleService {
 
     public List<Sale> findAll() {
         return saleRepository.findAllSales();
+    }
+
+    public com.perinity.grc.infrastructure.inbound.rest.dto.MonthlyRevenueStats generateMonthlyReport(
+            LocalDate referenceDate) {
+        LocalDate startDate = referenceDate.minusMonths(11).withDayOfMonth(1);
+
+        List<Sale> sales = saleRepository.findSalesBetween(startDate, referenceDate);
+
+        var groupedByMonth = sales.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                        s -> s.getSaleDate().getYear() + "-" + String.format("%02d", s.getSaleDate().getMonthValue())));
+
+        List<com.perinity.grc.infrastructure.inbound.rest.dto.MonthlyRevenueStats.MonthlyRecord> records = new ArrayList<>();
+        BigDecimal globalTotalRevenue = BigDecimal.ZERO;
+        BigDecimal globalTotalTax = BigDecimal.ZERO;
+        BigDecimal globalTotalFinal = BigDecimal.ZERO;
+
+        for (int i = 0; i < 12; i++) {
+            LocalDate currentMonthDate = startDate.plusMonths(i);
+            String key = currentMonthDate.getYear() + "-" + String.format("%02d", currentMonthDate.getMonthValue());
+            String label = currentMonthDate.getMonth().name().substring(0, 3) + "/" + currentMonthDate.getYear(); // ex:
+                                                                                                                  // JAN/2025
+
+            List<Sale> monthSales = groupedByMonth.getOrDefault(key, java.util.Collections.emptyList());
+
+            BigDecimal monthRevenue = monthSales.stream().map(Sale::getTotalAmount).reduce(BigDecimal.ZERO,
+                    BigDecimal::add);
+            BigDecimal monthTax = monthSales.stream().map(Sale::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal monthFinal = monthSales.stream().map(Sale::getFinalAmount).reduce(BigDecimal.ZERO,
+                    BigDecimal::add);
+
+            records.add(new com.perinity.grc.infrastructure.inbound.rest.dto.MonthlyRevenueStats.MonthlyRecord(
+                    label, monthRevenue, monthTax, monthFinal));
+
+            globalTotalRevenue = globalTotalRevenue.add(monthRevenue);
+            globalTotalTax = globalTotalTax.add(monthTax);
+            globalTotalFinal = globalTotalFinal.add(monthFinal);
+        }
+
+        return new com.perinity.grc.infrastructure.inbound.rest.dto.MonthlyRevenueStats(
+                records, globalTotalRevenue, globalTotalTax, globalTotalFinal);
     }
 }

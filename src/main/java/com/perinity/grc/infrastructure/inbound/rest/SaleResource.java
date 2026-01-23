@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,5 +79,14 @@ public class SaleResource {
         sale.getTaxAmount(),
         sale.getFinalAmount(),
         sale.getPaymentMethod());
+  }
+
+  @GET
+  @Path("/report/monthly")
+  public com.perinity.grc.infrastructure.inbound.rest.dto.MonthlyRevenueStats getMonthlyReport(
+      @QueryParam("date") String dateStr) {
+
+    LocalDate date = (dateStr == null) ? LocalDate.now() : LocalDate.parse(dateStr);
+    return service.generateMonthlyReport(date);
   }
 }

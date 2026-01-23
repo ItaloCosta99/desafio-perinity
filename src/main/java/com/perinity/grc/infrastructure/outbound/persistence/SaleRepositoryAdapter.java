@@ -56,6 +56,13 @@ public class SaleRepositoryAdapter implements SaleRepositoryPort, PanacheMongoRe
         return entity;
     }
 
+    @Override
+    public List<Sale> findSalesBetween(java.time.LocalDate startDate, java.time.LocalDate endDate) {
+        return find("saleDate >= ?1 and saleDate <= ?2", startDate, endDate).list().stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
     private Sale toDomain(SaleEntity entity) {
         Sale sale = new Sale();
         sale.setId(entity.id);

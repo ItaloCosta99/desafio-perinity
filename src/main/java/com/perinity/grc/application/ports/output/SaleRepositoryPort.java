@@ -5,5 +5,8 @@ import java.util.List;
 
 public interface SaleRepositoryPort {
     Sale save(Sale sale);
+
     List<Sale> findAllSales();
+
+    List<Sale> findSalesBetween(java.time.LocalDate startDate, java.time.LocalDate endDate);
 }
