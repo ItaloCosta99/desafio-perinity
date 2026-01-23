@@ -16,11 +16,9 @@ import java.util.UUID;
 public class ProductService {
 
     private final ProductRepositoryPort repository;
-    private final SaleService saleService;
 
     public ProductService(ProductRepositoryPort repository, SaleService saleService) {
         this.repository = repository;
-        this.saleService = saleService;
     }
 
     public Product create(Product product) {

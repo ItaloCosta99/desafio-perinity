@@ -146,4 +146,86 @@ class ClientServiceTest {
         Assertions.assertEquals(id, updated.getId());
         Assertions.assertNotNull(updated.getCreatedAt());
     }
+
+    @Test
+    void shouldThrowException_WhenUpdatingNonExistentClient() {
+        // Arrange
+        String id = "invalid-id";
+        Client dataToUpdate = new Client();
+        dataToUpdate.setFullName("João da Silva");
+
+        Mockito.when(repositoryPort.findClientById(id)).thenReturn(java.util.Optional.empty());
+
+        // Act & Assert
+        com.perinity.grc.application.domain.exception.NotFoundException exception = Assertions.assertThrows(
+                com.perinity.grc.application.domain.exception.NotFoundException.class,
+                () -> service.update(id, dataToUpdate));
+
+        Assertions.assertTrue(exception.getMessage().contains("Client not found"));
+    }
+
+    @Test
+    void shouldReturnNewClientsReport() {
+        // Arrange
+        java.time.LocalDate registrationDate = java.time.LocalDate.of(2025, 5, 15);
+        java.time.LocalDate birthDate = java.time.LocalDate.of(1990, 3, 20);
+
+        Client client1 = new Client();
+        client1.setId("client-1");
+        client1.setFullName("Maria Silva");
+        client1.setCreatedAt(registrationDate);
+        client1.setBirthDate(birthDate);
+
+        Client client2 = new Client();
+        client2.setId("client-2");
+        client2.setFullName("João Santos");
+        client2.setCreatedAt(registrationDate);
+        client2.setBirthDate(birthDate);
+
+        java.time.LocalDate start = java.time.LocalDate.of(2025, 1, 1);
+        java.time.LocalDate end = java.time.LocalDate.of(2025, 12, 31);
+
+        Mockito.when(repositoryPort.findClientsRegisteredBetween(start, end))
+                .thenReturn(java.util.Arrays.asList(client1, client2));
+
+        // Act
+        java.util.List<com.perinity.grc.infrastructure.inbound.rest.dto.NewClientReportDTO> report = service
+                .getNewClientsReport(2025);
+
+        // Assert
+        Assertions.assertEquals(2, report.size());
+        Assertions.assertEquals("client-1", report.get(0).id());
+        Assertions.assertEquals("Maria Silva", report.get(0).name());
+    }
+
+    @Test
+    void shouldReturnEmptyNewClientsReport() {
+        // Arrange
+        java.time.LocalDate start = java.time.LocalDate.of(2025, 1, 1);
+        java.time.LocalDate end = java.time.LocalDate.of(2025, 12, 31);
+
+        Mockito.when(repositoryPort.findClientsRegisteredBetween(start, end))
+                .thenReturn(java.util.Collections.emptyList());
+
+        // Act
+        java.util.List<com.perinity.grc.infrastructure.inbound.rest.dto.NewClientReportDTO> report = service
+                .getNewClientsReport(2025);
+
+        // Assert
+        Assertions.assertTrue(report.isEmpty());
+    }
+
+    @Test
+    void shouldDeleteClient_WhenIdDoesNotExist() {
+        // Arrange
+        String validId = "any-uuid";
+        Mockito.when(repositoryPort.deleteClient(validId)).thenReturn(false);
+
+        // Act
+        boolean deleted = service.delete(validId);
+
+        // Assert
+        Assertions.assertFalse(deleted);
+        Mockito.verify(repositoryPort, Mockito.times(1)).deleteClient(validId);
+    }
 }

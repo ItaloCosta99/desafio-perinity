@@ -47,7 +47,7 @@ public class ClientRepositoryAdapter implements ClientRepositoryPort, PanacheMon
 
     @Override
     public boolean deleteClient(String id) {
-        return delete("id", id) > 0;
+        return delete("_id", id) > 0;
     }
 
     @Override
