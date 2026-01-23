@@ -1,69 +1,83 @@
-# desafio-perinity
+# Desafio Perinity - Sistema GRC (Gestão de Relacionamento de Clientes)
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Este projeto é uma API REST moderna desenvolvida em **Java 17** com **Quarkus**, focada no gerenciamento de clientes, produtos e vendas. A aplicação segue princípios de arquitetura limpa e entrega **100% de cobertura de testes**.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## 🚀 Funcionalidades
 
-## Running the application in dev mode
+- **Gerenciamento de Clientes:** CRUD completo e relatórios de novos clientes por ano.
+- **Gerenciamento de Produtos:** CRUD completo e relatório de produtos mais antigos.
+- **Gerenciamento de Vendas:** Registro de vendas com cálculo automático de impostos (9%) e totais, além de relatórios de faturamento mensal e produtos mais vendidos.
+- **Documentação:** Swagger UI integrado para exploração da API.
 
-You can run your application in dev mode that enables live coding using:
+## 🛠 Tecnologias e Ferramentas
 
-```shell script
+- **Java 17** (Linguagem base)
+- **Quarkus 3.30.6** (Framework principal)
+- **MongoDB** (Banco de dados NoSQL)
+- **Panache MongoDB** (Simplificação da persistência)
+- **JUnit 5 & Mockito** (Testes unitários e mocks)
+- **REST Assured** (Testes de integração de API)
+- **JaCoCo** (Análise de cobertura de código)
+- **GitHub Actions** (CI/CD com MongoDB integrado)
+
+## 🏗 Arquitetura
+
+A aplicação foi estruturada seguindo princípios de **Hexagonal Architecture** (Portas e Adaptadores) e **DDD (Domain Driven Design)**, dividida em:
+
+- **Application Domain:** Modelos de domínio puro e exceções.
+- **Application Service:** Lógica de negócio e orquestração.
+- **Infrastructure Inbound:** Pontos de entrada REST e DTOs.
+- **Infrastructure Outbound:** Implementações de persistência (Adaptadores).
+
+## 🧪 Testes e Qualidade
+
+O projeto mantém rigorosos padrões de qualidade:
+
+- **Cobertura de Código:** **100%** de linhas e instruções cobertas (validado via plugin JaCoCo).
+- **Testes de Integração:** Validam o fluxo completo desde o endpoint até o banco de dados.
+- **Check de Cobertura:** O build falha automaticamente se a cobertura cair abaixo de 100%.
+
+Para rodar os testes e gerar o relatório de cobertura:
+
+```bash
+mvn clean verify
+```
+
+O relatório será gerado em `target/jacoco-report/index.html`.
+
+## 🏃 Como Rodar a Aplicação
+
+### Pré-requisitos
+
+- JDK 17+
+- Maven 3.8+
+- Instância do MongoDB (local ou Atlas)
+
+### Modo Desenvolvimento
+
+```bash
 ./mvnw compile quarkus:dev
 ```
 
-> **_NOTE:_** Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+A API estará disponível em `http://localhost:8080`.
+O Swagger UI pode ser acessado em `http://localhost:8080/q/swagger-ui`.
 
-## Packaging and running the application
+### Via Docker
 
-The application can be packaged using:
-
-```shell script
-./mvnw package
+```bash
+docker build -t desafio-perinity .
+docker run -p 8080:8080 -e MONGODB_PASSWORD=sua_senha desafio-perinity
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+## 📈 CI/CD
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+O projeto utiliza **GitHub Actions** para:
 
-If you want to build an _über-jar_, execute the following command:
+- Execução automatizada de testes a cada push/pull request.
+- Validação de 100% de cobertura de código.
+- Build da imagem Docker.
+- Armazenamento de artefatos de cobertura.
 
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
-```
+---
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/desafio-perinity-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- Hibernate Validator ([guide](https://quarkus.io/guides/validation)): Validate object properties (field, getter) and method parameters for your beans (REST, CDI, Jakarta Persistence)
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
-- MongoDB with Panache ([guide](https://quarkus.io/guides/mongodb-panache)): Simplify your persistence code for MongoDB via the active record or the repository pattern
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+Desenvolvido como parte do desafio técnico da Perinity.
