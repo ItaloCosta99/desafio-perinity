@@ -69,6 +69,15 @@ docker build -t desafio-perinity .
 docker run -p 8080:8080 -e MONGODB_PASSWORD=sua_senha desafio-perinity
 ```
 
+## 🌐 Acesso Online
+
+A aplicação está disponível para acesso através do Render:
+
+- **URL Base:** https://desafio-perinity-italo-api.onrender.com
+- **Swagger UI:** https://desafio-perinity-italo-api.onrender.com/q/swagger-ui/
+
+**Imagem Docker:** Disponível no Docker Hub https://hub.docker.com/r/italocosta0099/desafio-perinity-italo
+
 ## 📈 CI/CD
 
 O projeto utiliza **GitHub Actions** para:
